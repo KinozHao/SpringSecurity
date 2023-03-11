@@ -79,10 +79,15 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg";
-        String loginToken = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmZjIyNTY5MTdhM2M0NTNhOTY2NmIzMzJlMDBlYTM0OSIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTY3ODM1NDI3NCwiZXhwIjoxNjc4MzU3ODc0fQ.9gucxlvjGM9eQxVd86RYnPrg9DERn0v9ACyPEwk3T7c";
-        Claims claims = parseJWT(loginToken);
+        //注:jwt一段时间后会过期
+        //加密
+        String token = createJWT("Hao234124124!`dfafaj");
+        //打印加密后的密码
+        System.out.println(token);
+        //解密输出
+        Claims claims = parseJWT(token);
         System.out.println(claims);
+
     }
 
     /**

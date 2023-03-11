@@ -17,8 +17,13 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
-    private User sysUser;
+    //注入User
+    private User user;
 
+    /**
+     * 获取权限信息的
+     * @return
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -26,12 +31,12 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return sysUser.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return sysUser.getPassword();
+        return user.getPassword();
     }
 
     @Override
