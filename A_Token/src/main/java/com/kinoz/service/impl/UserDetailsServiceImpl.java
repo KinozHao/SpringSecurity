@@ -3,6 +3,7 @@ package com.kinoz.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kinoz.domain.pojo.LoginUser;
 import com.kinoz.domain.pojo.User;
+import com.kinoz.mapper.SysMenuMapper;
 import com.kinoz.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserMapper mapper;
 
+    @Resource
+    SysMenuMapper sysMenuMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //查询用户信息
@@ -37,9 +42,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("用户名或密码错误");
         }
 
-        //todo 查询对应得权限信息
-        List<String> permission_list = new ArrayList<String>(Arrays.asList("test","admin"));
+        //TODO 查询对应得权限信息
+        //测试使用使用静态数据
+        //List<String> permission_list = new ArrayList<>(Arrays.asList("test","admin"));
+        //替换为数据库
         //把数据封装为UserDetails类型
+        List<String> permission_list= sysMenuMapper.selectPermsByUserId(user.getId());
         return new LoginUser(user,permission_list);
     }
 }

@@ -30,18 +30,19 @@ public class LoginServiceImpl implements LoginService {
         //Authentication authenticate进行用户认证(跟数据库中的数据进行校验)
         //UsernamePasswordAuthenticationToken是Authentication的实现类
         //对数据进行封装,封装过后AuthenticationManager会去调用我们自己的UserDetailsService里面的逻辑进行匹配数据库
-        Authentication authenticateToken =
-                manager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        Authentication authenticate =
+                manager.authenticate(authenticationToken);
 
         //认证失败给出异常提示
         //通过debug断点此处 可以发现会返回一个LoginUser类型的数据
-        if (Objects.isNull(authenticateToken)){
+        if (Objects.isNull(authenticate)){
             throw new RuntimeException("登录失败");
         }
 
         //认证通过
         //获取之后进行LoginUser强转即可
-        var loginUser = (LoginUser) authenticateToken.getPrincipal();
+        var loginUser = (LoginUser) authenticate.getPrincipal();
 
         //使用userid生成一个jwt对象
         var userId = loginUser.getUser().getId();

@@ -53,7 +53,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         //存入securityContestHolder
 
-        //todo 获取权限信息的封装到authentication中
+        //TODO 获取权限信息的封装到authentication中
         var authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         //放行

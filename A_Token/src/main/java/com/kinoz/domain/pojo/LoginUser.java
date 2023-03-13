@@ -1,17 +1,14 @@
 package com.kinoz.domain.pojo;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -22,14 +19,13 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
-    //注入User
     private User user;
 
-    private List<String> permission;
+    private List<String> permissions;
 
     public LoginUser(User user, List<String> permission) {
         this.user = user;
-        this.permission = permission;
+        this.permissions = permission;
     }
 
     @JSONField(serialize = false)
@@ -52,7 +48,7 @@ public class LoginUser implements UserDetails {
         }
 
         //把permission中的String类型的权限信息封装为SimpleGrantedAuthority对象
-        authorities =permission
+        authorities = permissions
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
