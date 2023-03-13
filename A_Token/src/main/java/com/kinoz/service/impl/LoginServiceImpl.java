@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
         var map = new HashMap<String,String>();
         map.put("token",jwt);
 
-        //todo redis没学先不存了，把完整的用户信息存入redis id作为key
+        //把完整的用户信息存入redis id作为key
         redisCache.setCacheObject("login:"+userId,loginUser);
 
         return new ResponseResult(200,"login success",map);

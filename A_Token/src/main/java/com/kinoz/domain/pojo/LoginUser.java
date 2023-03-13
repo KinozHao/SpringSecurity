@@ -1,12 +1,18 @@
 package com.kinoz.domain.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author kinoz
@@ -14,11 +20,20 @@ import java.util.Collection;
  * @apiNote
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
     //注入User
     private User user;
+
+    private List<String> permission;
+
+    public LoginUser(User user, List<String> permission) {
+        this.user = user;
+        this.permission = permission;
+    }
+
+    @JSONField(serialize = false)
+    private List<SimpleGrantedAuthority> authorities;
 
     /**
      * 获取权限信息的
@@ -26,7 +41,22 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        /**
+         * @discripte SimpleGrantedAuthority为GrantedAuthority的实现类
+         * @see GrantedAuthority
+         * @see org.springframework.security.core.authority.SimpleGrantedAuthority
+         */
+        //先判断是否为空
+        if (authorities !=null){
+            return authorities;
+        }
+
+        //把permission中的String类型的权限信息封装为SimpleGrantedAuthority对象
+        authorities =permission
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
+        return authorities;
     }
 
     @Override

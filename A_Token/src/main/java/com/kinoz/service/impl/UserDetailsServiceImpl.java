@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,8 +38,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         //todo 查询对应得权限信息
-
+        List<String> permission_list = new ArrayList<String>(Arrays.asList("test","admin"));
         //把数据封装为UserDetails类型
-        return new LoginUser(user);
+        return new LoginUser(user,permission_list);
     }
 }

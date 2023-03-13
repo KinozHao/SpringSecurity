@@ -42,17 +42,19 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            throw new RuntimeException("token not illegal");
+            //如果抛出此异常,需要用postman携带json数据再次登录生成新的token
+            throw new RuntimeException("token not illegal token过期");
         }
         //从redis中获取用户信息
-        //todo 获取权限信息的封装到authentication中
         String redisKye = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKye);
         if (Objects.isNull(loginUser)){
             throw new RuntimeException("loginUser is null illegal");
         }
         //存入securityContestHolder
-        var authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);
+
+        //todo 获取权限信息的封装到authentication中
+        var authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         //放行
         filterChain.doFilter(request, response);
