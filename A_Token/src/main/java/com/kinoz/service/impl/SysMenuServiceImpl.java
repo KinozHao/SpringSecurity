@@ -3,7 +3,7 @@ package com.kinoz.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kinoz.domain.pojo.SysMenu;
-import com.kinoz.mapper.SysMenuMapper;
+import com.kinoz.mapper.MenuMapper;
 import com.kinoz.service.SysMenuService;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-03-14 15:13:04
 */
 @Service
-public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
+public class SysMenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu>
     implements SysMenuService {
 
 }

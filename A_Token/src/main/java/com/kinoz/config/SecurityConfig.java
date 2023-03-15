@@ -1,6 +1,8 @@
 package com.kinoz.config;
 
 import com.kinoz.filter.JwtAuthenticationTokenFilter;
+import com.kinoz.handler.AccessDeniedHandlerImpl;
+import com.kinoz.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +14,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     /**
      * 用于替换默认的PasswordEncoder
@@ -26,8 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Resource
+    JwtAuthenticationTokenFilter jwt;
+    @Resource
+    AccessDeniedHandlerImpl access;
+    @Resource
+    AuthenticationEntryPointImpl entryPoint;
 
     /**
      * 配置过滤规则
@@ -48,8 +58,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/hello").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
+
+        //添加各种过滤器
         //把我们自定义的filter添加到前面
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);
+
+        //配置异常处理器
+        http.exceptionHandling()
+            .authenticationEntryPoint(entryPoint)
+            .accessDeniedHandler(access);
+        //允许跨域
+        http.cors();
     }
 
     /**
@@ -62,4 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
+
 }
